@@ -7,6 +7,6 @@ mvn clean package
 
 ### To run application
 
-java -jar <pathToJar>/waterAmountCalculator-0.0.1.jar <initial data>
+java -jar [pathToJar]/waterAmountCalculator-0.0.1.jar [initial data]
 
 initial data example - 5,2,3,4,5,4,0,3,1 

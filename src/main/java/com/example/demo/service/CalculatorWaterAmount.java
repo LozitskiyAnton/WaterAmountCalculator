@@ -29,8 +29,8 @@ public class CalculatorWaterAmount {
         }
         String[] init = args[0].split(",");
         int[] initData = new int[init.length];
-        // Parse args to int list
 
+        // Parse args to int array
         for (int i = 0; i < init.length; i++) {
             int position = Integer.parseInt(init[i]);
             if (position < MIN_POSITION_HEIGHT || position > MAX_POSITION_HEIGHT) {
@@ -47,17 +47,10 @@ public class CalculatorWaterAmount {
         rightHeight[0] = initData[init.length-1];
 
         for (int i = 1; i < initData.length; i++) {
-            if (leftHeight[i - 1] < initData[i]) {
-                leftHeight[i] = initData[i];
-            } else {
-                leftHeight[i] = leftHeight[i - 1];
-            }
-            if (rightHeight[i - 1] < initData[init.length - 1 - i]) {
-                rightHeight[i] = initData[init.length - 1 - i];
-            } else {
-                rightHeight[i] = rightHeight[i - 1];
-            }
+            leftHeight[i] = Math.max(leftHeight[i - 1], initData[i]);
+            rightHeight[i] = Math.max(rightHeight[i - 1], initData[init.length - 1 - i]);
         }
+
         // count amount for each position
         int result = 0;
         for (int i = 0; i < init.length; i++) {

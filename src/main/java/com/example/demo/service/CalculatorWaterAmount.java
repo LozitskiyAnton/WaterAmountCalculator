@@ -19,46 +19,49 @@ public class CalculatorWaterAmount {
      * @param args initial data from program arguments
      * @return water amount
      */
-    public int calculate(String[] args) {
+    public long calculate(String[] args) {
         if (args.length == 0) {
             return 0;
         }
-        List<Integer> initData = new ArrayList<>();
+        if (((args[0].length())+1)/2 > 32000 ) {
+            log.debug("number of positions is = {}", ((args[0].length())+1)/2);
+            throw new IllegalArgumentException("Max number of positions is 32000");
+        }
+        String[] init = args[0].split(",");
+        int[] initData = new int[init.length];
         // Parse args to int list
-        for (String height : args[0].split(",")) {
-            int position = Integer.parseInt(height);
+
+        for (int i = 0; i < init.length; i++) {
+            int position = Integer.parseInt(init[i]);
             if (position < MIN_POSITION_HEIGHT || position > MAX_POSITION_HEIGHT) {
                 log.debug("Invalid position height = {}", position);
                 throw new IllegalArgumentException("Height must be from 0 to 32000");
             }
-            initData.add(position);
+            initData[i] = position;
         }
 
-        int initSize = initData.size();
         // find height for each position
-        List<Integer> leftHeight = new ArrayList<>();
-        leftHeight.add(initData.get(0));
-        List<Integer> rightHeight = new ArrayList<>();
-        rightHeight.add(initData.get(initSize - 1));
+        int[] leftHeight = new int[init.length];
+        leftHeight[0] = initData[0];
+        int[] rightHeight = new int[init.length];
+        rightHeight[0] = initData[init.length-1];
 
-        for (int i = 1; i < initData.size(); i++) {
-            if (leftHeight.get(i - 1) < initData.get(i)) {
-                leftHeight.add(i, initData.get(i));
+        for (int i = 1; i < initData.length; i++) {
+            if (leftHeight[i - 1] < initData[i]) {
+                leftHeight[i] = initData[i];
             } else {
-                leftHeight.add(i, leftHeight.get(i - 1));
+                leftHeight[i] = leftHeight[i - 1];
             }
-            if (rightHeight.get(i - 1) < initData.get(initSize - 1 - i)) {
-                rightHeight.add(i, initData.get(initSize - 1 - i));
+            if (rightHeight[i - 1] < initData[init.length - 1 - i]) {
+                rightHeight[i] = initData[init.length - 1 - i];
             } else {
-                rightHeight.add(i, rightHeight.get(i - 1));
+                rightHeight[i] = rightHeight[i - 1];
             }
         }
         // count amount for each position
         int result = 0;
-        for (int i = 0; i < initSize; i++) {
-            result += leftHeight.get(i) > rightHeight.get(i)
-                    ? rightHeight.get(i) - initData.get(i)
-                    : leftHeight.get(i) - initData.get(i);
+        for (int i = 0; i < init.length; i++) {
+            result += Math.min(leftHeight[i], rightHeight[i]) - initData[i];
         }
         return result;
     }

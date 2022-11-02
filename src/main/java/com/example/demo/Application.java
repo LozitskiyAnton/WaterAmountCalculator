@@ -11,7 +11,7 @@ public class Application {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
-        int amount = new CalculatorWaterAmount().calculate(args);
+        long amount = new CalculatorWaterAmount().calculate(args);
         log.info("Collected {} squares of water", amount);
     }
 
